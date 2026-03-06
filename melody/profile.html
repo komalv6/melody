@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🌸 Profile — Melody</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+:root{--page-bg:linear-gradient(135deg,#ffe0f0 0%,#ead5ff 50%,#c9e8ff 100%);}
+.av-card{padding:1.4rem;display:flex;align-items:center;gap:1.2rem;}
+.av-circle{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--lav));display:flex;align-items:center;justify-content:center;font-size:2.6rem;border:3px solid white;box-shadow:0 8px 24px rgba(167,139,250,.3);animation:avFloat 4s ease-in-out infinite;flex-shrink:0;cursor:none;}
+@keyframes avFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+.av-info{flex:1;}
+.av-name{font-family:'Baloo 2',cursive;font-size:1.35rem;font-weight:800;color:var(--ink);}
+.av-lev{font-size:.72rem;font-weight:700;color:var(--soft);margin-top:.1rem;}
+.av-btn{font-size:.62rem;font-weight:800;padding:.28rem .8rem;border-radius:99px;border:1.5px solid var(--border);background:rgba(255,255,255,.5);color:var(--soft);cursor:none;transition:all .25s var(--bounce);}
+.av-btn:hover{background:white;color:var(--ink);}
+.xp-card{padding:1.1rem 1.3rem;display:flex;flex-direction:column;gap:.6rem;}
+.xp-top{display:flex;justify-content:space-between;align-items:flex-end;}
+.xp-pts{font-family:'Baloo 2',cursive;font-size:2rem;font-weight:800;background:linear-gradient(135deg,var(--pink-d),var(--lav-d));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;}
+.xp-lbl{font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--soft);}
+.xp-right{text-align:right;}
+.xp-lname{font-family:'Baloo 2',cursive;font-size:.95rem;font-weight:700;color:var(--ink);}
+.xp-nnext{font-size:.62rem;color:var(--softer);}
+.xp-bar{height:11px;background:rgba(199,168,255,.2);border-radius:99px;overflow:hidden;border:1px solid var(--border);}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--pink-d),var(--lav-d));border-radius:99px;transition:width .8s var(--ease);}
+.xp-hint{font-size:.64rem;color:var(--softer);font-weight:600;}
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.65rem;}
+.stat-box{padding:.9rem 1rem;border-radius:18px;background:rgba(255,255,255,.45);border:1.5px solid var(--border);display:flex;align-items:center;gap:.75rem;}
+.stat-icon{font-size:1.5rem;}
+.stat-n{font-family:'Baloo 2',cursive;font-size:1.4rem;font-weight:800;color:var(--ink);line-height:1;}
+.stat-l{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--soft);}
+.bdg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;}
+.bdg-box{padding:.85rem .6rem;border-radius:16px;background:rgba(255,255,255,.35);border:1.5px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:.3rem;filter:grayscale(.9);opacity:.45;transition:all .3s var(--bounce);cursor:none;}
+.bdg-box.on{filter:none;opacity:1;background:linear-gradient(135deg,rgba(255,240,160,.4),rgba(255,200,210,.3));border-color:rgba(255,180,100,.35);box-shadow:0 4px 14px rgba(255,180,100,.15);}
+.bdg-box.on:hover{transform:translateY(-4px) scale(1.04);}
+.bdg-icon{font-size:1.6rem;}
+.bdg-name{font-size:.6rem;font-weight:800;text-align:center;color:var(--ink);}
+.bdg-desc{font-size:.54rem;color:var(--soft);text-align:center;line-height:1.3;}
+.song-list{display:flex;flex-direction:column;gap:.4rem;}
+.song-row{display:flex;align-items:center;gap:.75rem;padding:.6rem .9rem;border-radius:14px;background:rgba(255,255,255,.45);border:1.5px solid transparent;cursor:none;transition:all .22s var(--bounce);}
+.song-row:hover{background:rgba(255,255,255,.8);border-color:var(--border);transform:translateX(4px);}
+.sr-n{font-size:.68rem;font-weight:800;color:var(--softer);width:16px;}
+.sr-e{font-size:1.1rem;}
+.sr-info{flex:1;min-width:0;}
+.sr-t{font-size:.8rem;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sr-a{font-size:.64rem;color:var(--soft);}
+.sr-d{font-size:.64rem;color:var(--softer);font-weight:700;}
+.sec-hdr{font-family:'Baloo 2',cursive;font-size:.95rem;font-weight:700;color:var(--ink);}
+.empty-note{font-size:.75rem;color:var(--softer);padding:.4rem;font-weight:600;}
+</style>
+</head>
+<body>
+<div class="bg-wrap" style="--blob1:var(--rose);--blob2:var(--lav);--blob3:var(--sky)"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+<div class="page-shell">
+  <div class="ph"><div class="ph-icon">🌸</div><div><h1 style="--g1:var(--pink-dd);--g2:var(--lav-d)">My Profile</h1><div class="sub">Your music journey ✨</div></div></div>
+  <div class="card av-card">
+    <div class="av-circle" id="avCircle">🎀</div>
+    <div class="av-info"><div class="av-name" id="avName">Melody Lover</div><div class="av-lev" id="avLev">🌱 Sprout · Level 1</div></div>
+    <button class="av-btn" onclick="cycleAv()">Change ✨</button>
+  </div>
+  <div class="card xp-card">
+    <div class="xp-top">
+      <div><div class="xp-pts" id="xpPts">0</div><div class="xp-lbl">✨ Vibe Points</div></div>
+      <div class="xp-right"><div class="xp-lname" id="xpLN">🌱 Sprout</div><div class="xp-nnext" id="xpNN">50 pts to next</div></div>
+    </div>
+    <div class="xp-bar"><div class="xp-fill" id="xpFill" style="width:0%"></div></div>
+    <div class="xp-hint" id="xpHint">Keep listening to level up!</div>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-box"><div class="stat-icon">🎵</div><div><div class="stat-n" id="sSongs">0</div><div class="stat-l">Songs Played</div></div></div>
+    <div class="stat-box"><div class="stat-icon">🔥</div><div><div class="stat-n" id="sStreak">0</div><div class="stat-l">Day Streak</div></div></div>
+    <div class="stat-box"><div class="stat-icon">⏱️</div><div><div class="stat-n" id="sMins">0</div><div class="stat-l">Mins Listened</div></div></div>
+    <div class="stat-box"><div class="stat-icon">🎯</div><div><div class="stat-n" id="sQuiz">0</div><div class="stat-l">Quiz Correct</div></div></div>
+  </div>
+  <div class="card" style="padding:1.2rem 1.3rem;display:flex;flex-direction:column;gap:.8rem;">
+    <div class="sec-hdr">🏅 Badges <span id="bdgCount" style="font-size:.7rem;color:var(--soft);font-weight:600"></span></div>
+    <div class="bdg-grid" id="bdgGrid"></div>
+  </div>
+  <div class="card" style="padding:1.2rem 1.3rem;display:flex;flex-direction:column;gap:.7rem;">
+    <div class="sec-hdr">❤️ Liked Songs</div>
+    <div class="song-list" id="likedList"></div>
+  </div>
+  <div class="card" style="padding:1.2rem 1.3rem;display:flex;flex-direction:column;gap:.7rem;">
+    <div class="sec-hdr">🕒 Recently Played</div>
+    <div class="song-list" id="recentList"></div>
+  </div>
+  <div style="text-align:center;padding:.5rem;">
+    <button style="font-size:.65rem;font-weight:800;color:var(--softer);background:none;border:1.5px solid var(--border);border-radius:99px;padding:.3rem .9rem;cursor:none;" onclick="doReset()">🗑️ Reset All Data</button>
+  </div>
+</div>
+<script src="shared.js"></script>
+<script>
+setupCursor();
+buildMiniBar('profile');
+function refresh(){
+  const s=initState();
+  document.getElementById('avCircle').textContent=AVATARS[s.avatarIdx||0];
+  document.getElementById('avName').textContent=(s.earnedBadges||[]).length>=6?'Melody Master':'Melody Lover';
+  const lv=getLevel(s.points||0);
+  document.getElementById('avLev').textContent=lv.name+' · Level '+lv.level;
+  document.getElementById('xpPts').textContent=s.points||0;
+  document.getElementById('xpLN').textContent=lv.name;
+  const pct=lv.level>=LEVELS.length?100:Math.floor(((s.points-lv.cur)/(lv.next-lv.cur))*100);
+  document.getElementById('xpFill').style.width=pct+'%';
+  document.getElementById('xpNN').textContent=lv.level>=LEVELS.length?'MAX LEVEL 🎉':(lv.next-(s.points||0))+' pts to next';
+  document.getElementById('xpHint').textContent=lv.level>=LEVELS.length?'You reached the top! 🌙':'Keep playing to level up 🎀';
+  document.getElementById('sSongs').textContent=s.songsPlayed||0;
+  document.getElementById('sStreak').textContent=s.streakDays||0;
+  document.getElementById('sMins').textContent=Math.floor(s.minutesListened||0);
+  document.getElementById('sQuiz').textContent=s.quizScore||0;
+  const earned=new Set(s.earnedBadges||[]);
+  document.getElementById('bdgCount').textContent=earned.size+' / '+ALL_BADGES.length;
+  const bg=document.getElementById('bdgGrid'); bg.innerHTML='';
+  ALL_BADGES.forEach(b=>{
+    const el=document.createElement('div'); el.className='bdg-box'+(earned.has(b.id)?' on':'');
+    el.innerHTML=`<div class="bdg-icon">${b.icon}</div><div class="bdg-name">${b.name}</div><div class="bdg-desc">${b.desc}</div>`;
+    bg.appendChild(el);
+  });
+  const liked=s.likedSongs||[];
+  const ll=document.getElementById('likedList'); ll.innerHTML='';
+  if(!liked.length) ll.innerHTML='<div class="empty-note">❤️ Like songs in Player!</div>';
+  else liked.forEach((idx,i)=>{const t=TRACKS[idx];const el=document.createElement('div');el.className='song-row';el.innerHTML=`<div class="sr-n">${i+1}</div><div class="sr-e">${t.emoji}</div><div class="sr-info"><div class="sr-t">${t.title}</div><div class="sr-a">${t.artist}</div></div><div class="sr-d">${t.durStr}</div>`;el.onclick=()=>{setState({curIdx:idx,progress:0});window.location.href='player.html';};ll.appendChild(el);});
+  const ph=s.playHistory||[];
+  const rl=document.getElementById('recentList'); rl.innerHTML='';
+  if(!ph.length) rl.innerHTML='<div class="empty-note">🎵 Play some songs first!</div>';
+  else ph.slice().reverse().slice(0,6).forEach((idx,i)=>{const t=TRACKS[idx];const el=document.createElement('div');el.className='song-row';el.innerHTML=`<div class="sr-n">${i+1}</div><div class="sr-e">${t.emoji}</div><div class="sr-info"><div class="sr-t">${t.title}</div><div class="sr-a">${t.artist}</div></div><div class="sr-d">${t.durStr}</div>`;el.onclick=()=>{setState({curIdx:idx,progress:0});window.location.href='player.html';};rl.appendChild(el);});
+}
+function cycleAv(){const s=getState();const idx=((s.avatarIdx||0)+1)%AVATARS.length;setState({avatarIdx:idx});document.getElementById('avCircle').textContent=AVATARS[idx];spawnFloat(null,'✨');addPoints(1);}
+function doReset(){if(confirm('Reset all data?')){localStorage.removeItem('melodyState');showToast('🌱 Fresh start!');setTimeout(refresh,400);}}
+refresh();checkBadges();
+</script>
+</body>
+</html>

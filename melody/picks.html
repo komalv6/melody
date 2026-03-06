@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🔥 Top Picks — Melody</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+:root{--page-bg:linear-gradient(135deg,#fff5d6 0%,#ffe0c8 40%,#ffc8d8 100%);}
+.hero-banner{padding:1.2rem 1.4rem;background:linear-gradient(120deg,rgba(255,210,80,.3),rgba(255,133,161,.2));border:1.5px solid rgba(255,180,80,.3);border-radius:22px;display:flex;align-items:center;gap:1rem;}
+.hb-icon{font-size:3rem;animation:fireBounce 1s ease-in-out infinite alternate;}
+@keyframes fireBounce{from{transform:scale(1);}to{transform:scale(1.1)translateY(-4px);}}
+.hb-info .hb-title{font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:var(--ink);}
+.hb-info .hb-sub{font-size:.68rem;color:var(--soft);font-weight:700;margin-top:.1rem;}
+.hb-date{font-size:.6rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .7rem;border-radius:99px;background:var(--yellow);color:var(--ink);border:1px solid rgba(200,160,0,.2);}
+
+.section-title{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:800;color:var(--ink);margin-bottom:.55rem;display:flex;align-items:center;gap:.4rem;}
+
+/* Featured card */
+.feat-card{border-radius:24px;overflow:hidden;position:relative;cursor:none;transition:transform .3s var(--bounce),box-shadow .3s;box-shadow:0 8px 28px var(--shadow);}
+.feat-card:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(167,139,250,.25);}
+.feat-img{width:100%;height:160px;display:flex;align-items:center;justify-content:center;font-size:5rem;position:relative;}
+.feat-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(61,46,92,.75) 0%,transparent 55%);}
+.feat-info{position:absolute;bottom:0;left:0;right:0;padding:1rem 1.2rem;}
+.feat-tag{display:inline-block;font-size:.56rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .6rem;border-radius:99px;background:var(--yellow);color:var(--ink);margin-bottom:.3rem;}
+.feat-title{font-family:'Baloo 2',cursive;font-size:1.15rem;font-weight:800;color:white;line-height:1.2;}
+.feat-artist{font-size:.7rem;color:rgba(255,255,255,.8);}
+.feat-play{position:absolute;bottom:1rem;right:1rem;width:40px;height:40px;border-radius:50%;background:white;border:none;display:flex;align-items:center;justify-content:center;font-size:1rem;cursor:none;box-shadow:0 4px 14px rgba(0,0,0,.2);transition:transform .25s var(--bounce);}
+.feat-play:hover{transform:scale(1.15);}
+
+/* Picks list */
+.picks-list{display:flex;flex-direction:column;gap:.5rem;}
+.pick-item{display:flex;align-items:center;gap:.9rem;padding:.7rem 1rem;border-radius:16px;cursor:none;background:rgba(255,255,255,.55);border:1.5px solid var(--border);transition:all .25s var(--bounce);position:relative;}
+.pick-item:hover{background:rgba(255,255,255,.85);transform:translateX(4px);}
+.pick-rank{font-family:'Baloo 2',cursive;font-size:1.2rem;font-weight:800;width:28px;text-align:center;flex-shrink:0;color:var(--softer);}
+.pick-rank.g{color:#f5a623;} .pick-rank.s{color:#9e9e9e;} .pick-rank.b{color:#cd7f32;}
+.pick-art{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;border:1.5px solid var(--border);}
+.pick-info{flex:1;min-width:0;}
+.pick-title{font-size:.84rem;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pick-artist{font-size:.67rem;color:var(--soft);}
+.pick-meta{display:flex;flex-direction:column;align-items:flex-end;gap:.2rem;flex-shrink:0;}
+.pick-dur{font-size:.67rem;color:var(--soft);font-weight:700;}
+.pick-hot{font-size:.55rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;padding:.16rem .5rem;border-radius:99px;background:rgba(255,133,161,.2);color:var(--pink-dd);}
+.play-mini{background:none;border:none;cursor:none;font-size:1.1rem;transition:transform .2s var(--bounce);}
+.play-mini:hover{transform:scale(1.25);}
+
+/* Mood section */
+.mood-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.65rem;}
+.mood-card{padding:.9rem;border-radius:18px;cursor:none;border:1.5px solid var(--border);transition:all .3s var(--bounce);text-align:center;background:rgba(255,255,255,.45);}
+.mood-card:hover{transform:translateY(-4px);background:rgba(255,255,255,.78);box-shadow:0 8px 24px var(--shadow);}
+.mood-emoji{font-size:2rem;display:block;margin-bottom:.3rem;}
+.mood-name{font-family:'Baloo 2',cursive;font-size:.82rem;font-weight:700;color:var(--ink);}
+.mood-count{font-size:.6rem;color:var(--soft);font-weight:600;}
+</style>
+</head>
+<body>
+<div class="bg-wrap" style="--blob1:var(--yellow);--blob2:var(--peach);--blob3:var(--pink)"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+<div class="page-shell">
+  <div class="ph">
+    <div class="ph-icon">🔥</div>
+    <div>
+      <h1 style="--g1:#f5a623;--g2:var(--pink-d)">Today's Picks</h1>
+      <div class="sub" id="todayDate"></div>
+    </div>
+  </div>
+
+  <div class="hero-banner">
+    <div class="hb-icon">🔥</div>
+    <div class="hb-info flex:1">
+      <div class="hb-title">Curated just for you</div>
+      <div class="hb-sub">Fresh picks based on your vibe & listening history</div>
+    </div>
+    <div class="hb-date" id="hbDate"></div>
+  </div>
+
+  <!-- Featured -->
+  <div>
+    <div class="section-title">⭐ Featured Today</div>
+    <div class="feat-card card" id="featCard" onclick="playFeat()">
+      <div class="feat-img" id="featImg"></div>
+      <div class="feat-overlay"></div>
+      <div class="feat-info">
+        <div class="feat-tag">✨ EDITOR'S PICK</div>
+        <div class="feat-title" id="featTitle"></div>
+        <div class="feat-artist" id="featArtist"></div>
+      </div>
+      <button class="feat-play" id="featPlayBtn">▶</button>
+    </div>
+  </div>
+
+  <!-- Hot list -->
+  <div>
+    <div class="section-title">🔥 Hot Right Now</div>
+    <div class="picks-list" id="hotList"></div>
+  </div>
+
+  <!-- Mood stations -->
+  <div>
+    <div class="section-title">🎭 Pick a Mood</div>
+    <div class="mood-grid" id="moodGrid"></div>
+  </div>
+
+</div>
+<script src="shared.js"></script>
+<script>
+setupCursor();
+buildMiniBar('picks');
+
+const today = new Date();
+const dateStr = today.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+document.getElementById('todayDate').textContent = dateStr;
+document.getElementById('hbDate').textContent = today.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+
+// Seed randomness by day so picks feel "daily" but consistent
+const daySeed = today.getFullYear()*1000 + today.getMonth()*100 + today.getDate();
+function seededShuffle(arr, seed) {
+  const a=[...arr]; let s=seed;
+  for(let i=a.length-1;i>0;i--){ s=(s*1664525+1013904223)&0xffffffff; const j=Math.abs(s)%(i+1); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+const todayTracks = seededShuffle(TRACKS.map((t,i)=>({...t,i})), daySeed);
+const featured = todayTracks[0];
+const hotList = todayTracks.slice(1, 7);
+
+// Featured
+document.getElementById('featImg').textContent = featured.emoji;
+document.getElementById('featImg').style.background = featured.color;
+document.getElementById('featTitle').textContent = featured.title;
+document.getElementById('featArtist').textContent = featured.artist;
+
+function playFeat() {
+  setState({curIdx:featured.i, progress:0});
+  showToast('▶ Playing: '+featured.title);
+  window.location.href='player.html';
+}
+
+// Hot list
+const ranks=['g','s','b','','','',''];
+const hotLabels=['🥇 #1','🔥 Trending','💖 Loved','✨ Rising','🌟 Classic','🎵 Chill'];
+const container = document.getElementById('hotList');
+hotList.forEach((t, i) => {
+  const el=document.createElement('div'); el.className='pick-item';
+  el.innerHTML=`
+    <div class="pick-rank ${ranks[i]||''}">${i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1)}</div>
+    <div class="pick-art" style="background:${t.color}">${t.emoji}</div>
+    <div class="pick-info"><div class="pick-title">${t.title}</div><div class="pick-artist">${t.artist}</div></div>
+    <div class="pick-meta"><div class="pick-dur">${t.durStr}</div><div class="pick-hot">${hotLabels[i]||'🎵 Pick'}</div></div>
+    <button class="play-mini" onclick="playPick(event,${t.i})">▶</button>
+  `;
+  container.appendChild(el);
+});
+
+function playPick(e, idx) {
+  e.stopPropagation();
+  spawnFloat(e,'🎵');
+  setState({curIdx:idx, progress:0});
+  showToast('▶ Playing: '+TRACKS[idx].title);
+  setTimeout(()=>window.location.href='player.html',600);
+}
+
+// Mood stations
+const moods=[
+  {emoji:'😌',name:'Chill & Relax',genres:['Lo-fi','Ambient','Chillhop'],color:'#e8f4ff'},
+  {emoji:'🕺',name:'Party Mode',genres:['Pop','Dance','Dream-pop'],color:'#ffe8f0'},
+  {emoji:'🌙',name:'Late Night',genres:['Ambient','Lo-fi','Jazz'],color:'#ede4ff'},
+  {emoji:'☀️',name:'Morning Boost',genres:['Indie','Indie-pop','Pop'],color:'#fff9d0'},
+];
+const mg=document.getElementById('moodGrid');
+moods.forEach(m=>{
+  const tracks=TRACKS.filter(t=>m.genres.includes(t.genre));
+  const el=document.createElement('div'); el.className='mood-card';
+  el.style.background=m.color;
+  el.innerHTML=`<span class="mood-emoji">${m.emoji}</span><div class="mood-name">${m.name}</div><div class="mood-count">${tracks.length} songs</div>`;
+  el.onclick=()=>{
+    if(tracks.length){ setState({curIdx:TRACKS.indexOf(tracks[0]),progress:0}); showToast(m.emoji+' '+m.name+' mode!'); window.location.href='player.html'; }
+  };
+  mg.appendChild(el);
+});
+</script>
+</body>
+</html>

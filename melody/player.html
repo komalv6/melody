@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🎵 Player — Melody</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+:root{--page-bg:linear-gradient(135deg,#fce4f3 0%,#e8d5ff 50%,#d0f4e8 100%);}
+.page-shell{align-items:center;}
+
+/* Art */
+.art-wrap{position:relative;width:220px;height:220px;margin:.5rem auto;}
+.art-ring{position:absolute;inset:-10px;border-radius:50%;border:3px dashed rgba(199,168,255,.45);animation:spinRing 14s linear infinite;animation-play-state:paused;}
+.art-ring.sp{animation-play-state:running;}
+.art-ring2{position:absolute;inset:-20px;border-radius:50%;border:2px dotted rgba(255,179,198,.3);animation:spinRing 22s linear infinite reverse;animation-play-state:paused;}
+.art-ring2.sp{animation-play-state:running;}
+@keyframes spinRing{to{transform:rotate(360deg);}}
+.art-circle{
+  width:220px;height:220px;border-radius:50%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-size:5.5rem;background:var(--yellow);
+  box-shadow:0 12px 40px rgba(167,139,250,.28),0 0 0 8px rgba(255,255,255,.55);
+  transition:background .6s;cursor:none;
+  animation:artIdle 4s ease-in-out infinite;animation-play-state:paused;
+}
+.art-circle.sp{animation-play-state:running;}
+@keyframes artIdle{0%,100%{transform:scale(1);}50%{transform:scale(1.04);}}
+.art-emoji{font-size:5.5rem;animation:emojiDance 3s ease-in-out infinite;animation-play-state:paused;user-select:none;}
+.art-circle.sp .art-emoji{animation-play-state:running;}
+@keyframes emojiDance{0%,100%{transform:translateY(0)rotate(-6deg);}50%{transform:translateY(-9px)rotate(6deg);}}
+.vis-row{display:flex;gap:3px;align-items:flex-end;opacity:0;transition:opacity .4s;margin-top:4px;}
+.art-circle.sp .vis-row{opacity:1;}
+.vb{width:4px;border-radius:4px;background:rgba(255,255,255,.8);animation:vbA .55s ease-in-out infinite alternate;}
+.vb:nth-child(1){animation-duration:.5s;} .vb:nth-child(2){animation-duration:.7s;animation-delay:.1s;}
+.vb:nth-child(3){animation-duration:.45s;animation-delay:.2s;} .vb:nth-child(4){animation-duration:.65s;animation-delay:.05s;}
+.vb:nth-child(5){animation-duration:.55s;animation-delay:.15s;}
+@keyframes vbA{from{height:3px;}to{height:20px;}}
+
+/* Info */
+.song-info{text-align:center;width:100%;max-width:320px;}
+.song-title{font-family:'Baloo 2',cursive;font-size:1.45rem;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.song-artist{font-size:.82rem;color:var(--soft);font-weight:700;margin-top:.1rem;}
+.genre-pill{display:inline-block;margin-top:.4rem;font-size:.62rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:.24rem .8rem;border-radius:99px;background:var(--lav);color:var(--ink);border:1px solid rgba(167,139,250,.3);}
+
+/* Progress */
+.prog-wrap{width:100%;max-width:320px;display:flex;flex-direction:column;gap:.35rem;}
+.time-row{display:flex;justify-content:space-between;font-size:.68rem;color:var(--soft);font-weight:700;}
+.prog-track{width:100%;height:9px;background:rgba(199,168,255,.22);border-radius:99px;cursor:none;position:relative;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--pink-d),var(--lav-d));border-radius:99px;width:0%;transition:width .12s linear;position:relative;}
+.prog-fill::after{content:'';position:absolute;right:-6px;top:50%;transform:translateY(-50%);width:16px;height:16px;background:white;border-radius:50%;border:2.5px solid var(--lav-d);box-shadow:0 2px 8px rgba(167,139,250,.4);opacity:0;transition:opacity .2s;}
+.prog-track:hover .prog-fill::after{opacity:1;}
+
+/* Controls */
+.controls{display:flex;align-items:center;gap:.9rem;}
+.c-btn{background:none;border:none;cursor:none;color:var(--soft);font-size:1.1rem;padding:.35rem;transition:transform .25s var(--bounce),color .2s;}
+.c-btn:hover{color:var(--ink);transform:scale(1.25);}
+.c-btn.lit{color:var(--pink-d);}
+.play-btn{width:66px;height:66px;background:linear-gradient(135deg,var(--pink-d),var(--lav-d));border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:white;cursor:none;box-shadow:0 6px 24px rgba(167,139,250,.4);transition:transform .25s var(--bounce),box-shadow .25s;}
+.play-btn:hover{transform:scale(1.1);}
+.play-btn:active{transform:scale(.9);}
+.play-btn.sp{animation:playPulse 2s ease-in-out infinite;}
+@keyframes playPulse{0%,100%{box-shadow:0 6px 24px rgba(167,139,250,.4),0 0 0 0 rgba(255,133,161,.35);}50%{box-shadow:0 6px 24px rgba(167,139,250,.4),0 0 0 14px rgba(255,133,161,0);}}
+
+/* Volume */
+.vol-row{display:flex;align-items:center;gap:.7rem;width:100%;max-width:300px;}
+.vol-icon{font-size:.95rem;cursor:none;color:var(--soft);}
+input.vol-sl{flex:1;-webkit-appearance:none;appearance:none;height:5px;background:linear-gradient(90deg,var(--mint-d) var(--vp,70%),rgba(181,234,215,.3) var(--vp,70%));border-radius:99px;outline:none;cursor:none;transition:height .2s;}
+input.vol-sl:hover{height:8px;}
+input.vol-sl::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:white;border:2.5px solid var(--mint-d);box-shadow:0 2px 6px rgba(107,207,181,.4);cursor:none;}
+.vol-val{font-size:.68rem;font-weight:800;color:var(--soft);min-width:30px;}
+
+/* Toggles */
+.tog-row{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;}
+
+/* Like btn */
+.like-btn{background:none;border:1.5px solid var(--border);border-radius:99px;padding:.3rem .9rem;font-size:.75rem;cursor:none;color:var(--soft);font-family:'Nunito',sans-serif;font-weight:800;transition:all .25s var(--bounce);}
+.like-btn:hover{background:rgba(255,133,161,.1);border-color:var(--pink-d);color:var(--pink-dd);}
+.like-btn.liked{background:var(--pink);border-color:var(--pink-d);color:var(--pink-dd);}
+</style>
+</head>
+<body>
+<div class="bg-wrap"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+
+<div class="page-shell">
+  <div class="ph">
+    <div class="ph-icon">🎵</div>
+    <div><h1 style="--g1:var(--pink-dd);--g2:var(--lav-d)">Now Playing</h1></div>
+  </div>
+
+  <!-- Album art -->
+  <div class="art-wrap">
+    <div class="art-ring" id="artRing"></div>
+    <div class="art-ring2" id="artRing2"></div>
+    <div class="art-circle" id="artCircle" onclick="tapArt(event)">
+      <div class="art-emoji" id="artEmoji">🎵</div>
+      <div class="vis-row">
+        <div class="vb"></div><div class="vb"></div><div class="vb"></div>
+        <div class="vb"></div><div class="vb"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Song info -->
+  <div class="song-info">
+    <div class="song-title" id="songTitle">Choose a Song</div>
+    <div class="song-artist" id="songArtist">Open Playlist to browse</div>
+    <span class="genre-pill" id="genrePill">🎵 Melody</span>
+  </div>
+
+  <!-- Progress -->
+  <div class="prog-wrap">
+    <div class="time-row"><span id="tCur">0:00</span><span id="tTot">0:00</span></div>
+    <div class="prog-track" id="progTrack">
+      <div class="prog-fill" id="progFill"></div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <button class="c-btn" onclick="prevTrack()">⏮</button>
+    <button class="c-btn" onclick="seekBack()">⏪</button>
+    <button class="play-btn" id="playBtn" onclick="playerToggle(event)">▶</button>
+    <button class="c-btn" onclick="seekFwd()">⏩</button>
+    <button class="c-btn" onclick="nextTrack()">⏭</button>
+  </div>
+
+  <!-- Volume -->
+  <div class="vol-row">
+    <span class="vol-icon" id="volIcon">🔊</span>
+    <input type="range" class="vol-sl" id="volSl" min="0" max="100" value="70" oninput="setVol(this.value)">
+    <span class="vol-val" id="volVal">70%</span>
+  </div>
+
+  <!-- Toggles -->
+  <div class="tog-row">
+    <button class="pill" id="togShuffle" onclick="toggleShuffle()">🔀 Shuffle</button>
+    <button class="pill on" id="togAuto" onclick="toggleAutoplay()">🔁 Auto</button>
+    <button class="pill" id="togRepeat" onclick="toggleRepeat()">🔂 Repeat</button>
+    <button class="like-btn" id="likeBtn" onclick="toggleLike(event)">🤍 Like</button>
+  </div>
+</div>
+
+<script src="shared.js"></script>
+<script>
+setupCursor();
+buildMiniBar('player');
+
+let simInterval2 = null, simTime2 = 0, muted = false;
+
+function loadUI() {
+  const s = getState();
+  const t = TRACKS[s.curIdx];
+  document.getElementById('songTitle').textContent = t.title;
+  document.getElementById('songArtist').textContent = t.artist;
+  document.getElementById('genrePill').textContent = '🎵 ' + t.genre;
+  document.getElementById('artEmoji').textContent = t.emoji;
+  document.getElementById('artCircle').style.background = t.color;
+  document.getElementById('progFill').style.width = s.progress + '%';
+  const elapsed = Math.floor((s.progress/100)*t.dur);
+  document.getElementById('tCur').textContent = fmtTime(elapsed);
+  document.getElementById('tTot').textContent = t.durStr;
+  document.getElementById('volSl').value = s.volume || 70;
+  setVol(s.volume || 70, false);
+  document.getElementById('togShuffle').classList.toggle('on', s.shuffle);
+  document.getElementById('togAuto').classList.toggle('on', s.autoplay !== false);
+  document.getElementById('togRepeat').classList.toggle('on', s.repeat);
+  const liked = (s.likedSongs||[]).includes(s.curIdx);
+  document.getElementById('likeBtn').classList.toggle('liked', liked);
+  document.getElementById('likeBtn').textContent = liked ? '❤️ Liked' : '🤍 Like';
+  setPlayState(s.playing);
+}
+function setPlayState(on) {
+  document.getElementById('playBtn').textContent = on ? '⏸' : '▶';
+  document.getElementById('playBtn').classList.toggle('sp', on);
+  document.getElementById('artCircle').classList.toggle('sp', on);
+  document.getElementById('artRing').classList.toggle('sp', on);
+  document.getElementById('artRing2').classList.toggle('sp', on);
+}
+
+function playerToggle(e) {
+  spawnFloat(e, '🎵');
+  const s = getState();
+  if (s.playing) { stopP(); setState({playing:false}); setPlayState(false); }
+  else { startP(); }
+}
+function startP() {
+  const s = getState();
+  simTime2 = Math.floor((s.progress/100)*TRACKS[s.curIdx].dur);
+  setState({playing:true});
+  setPlayState(true);
+  addPoints(5, '▶ Song started! +5');
+  const st = getState();
+  const ph = st.playHistory||[];
+  if(!ph.includes(st.curIdx)) ph.push(st.curIdx);
+  setState({songsPlayed:(st.songsPlayed||0)+1, playHistory:ph});
+  clearInterval(simInterval2);
+  simInterval2 = setInterval(() => {
+    const st = getState();
+    if (!st.playing) { clearInterval(simInterval2); return; }
+    simTime2++;
+    const t = TRACKS[st.curIdx];
+    const pct = (simTime2 / t.dur) * 100;
+    setState({ progress: pct, minutesListened: (st.minutesListened||0) + 1/60 });
+    document.getElementById('progFill').style.width = pct + '%';
+    document.getElementById('miniProg').style.width = pct + '%';
+    document.getElementById('tCur').textContent = fmtTime(simTime2);
+    addPoints(1);
+    if (pct >= 100) {
+      clearInterval(simInterval2);
+      if (st.repeat) { setState({progress:0}); simTime2=0; startP(); }
+      else if (st.autoplay !== false) nextTrack();
+      else { setState({playing:false}); setPlayState(false); }
+    }
+  }, 1000);
+}
+function stopP() { clearInterval(simInterval2); }
+
+document.getElementById('progTrack').addEventListener('click', function(e) {
+  const pct = (e.clientX - this.getBoundingClientRect().left) / this.offsetWidth * 100;
+  simTime2 = Math.floor((pct/100)*TRACKS[getState().curIdx].dur);
+  setState({progress:pct});
+  document.getElementById('progFill').style.width = pct+'%';
+  document.getElementById('tCur').textContent = fmtTime(simTime2);
+});
+
+function seekFwd() { simTime2 = Math.min(TRACKS[getState().curIdx].dur, simTime2+10); const pct=(simTime2/TRACKS[getState().curIdx].dur)*100; setState({progress:pct}); document.getElementById('progFill').style.width=pct+'%'; }
+function seekBack() { simTime2 = Math.max(0, simTime2-10); const pct=(simTime2/TRACKS[getState().curIdx].dur)*100; setState({progress:pct}); document.getElementById('progFill').style.width=pct+'%'; }
+
+function nextTrack() {
+  stopP();
+  const s = getState();
+  const idx = s.shuffle ? Math.floor(Math.random()*TRACKS.length) : (s.curIdx+1)%TRACKS.length;
+  setState({curIdx:idx,progress:0,playing:false});
+  loadUI(); startP();
+}
+function prevTrack() {
+  stopP();
+  const s = getState();
+  setState({curIdx:(s.curIdx-1+TRACKS.length)%TRACKS.length,progress:0,playing:false});
+  loadUI(); startP();
+}
+function setVol(v, save=true) {
+  document.getElementById('volVal').textContent = v + '%';
+  document.getElementById('volSl').style.setProperty('--vp', v+'%');
+  const icons = ['🔇','🔈','🔉','🔊'];
+  document.getElementById('volIcon').textContent = v==0?icons[0]:v<35?icons[1]:v<70?icons[2]:icons[3];
+  if(save) setState({volume:parseInt(v)});
+}
+function toggleShuffle() { const s=getState(); const v=!s.shuffle; setState({shuffle:v,shuffleUses:(s.shuffleUses||0)+(v?1:0)}); document.getElementById('togShuffle').classList.toggle('on',v); showToast(v?'🔀 Shuffle ON':'🔀 Shuffle OFF'); checkBadges(); }
+function toggleAutoplay() { const s=getState(); const v=!(s.autoplay!==false); setState({autoplay:v}); document.getElementById('togAuto').classList.toggle('on',v); showToast(v?'🔁 Autoplay ON':'🔁 Autoplay OFF'); }
+function toggleRepeat() { const s=getState(); const v=!s.repeat; setState({repeat:v}); document.getElementById('togRepeat').classList.toggle('on',v); showToast(v?'🔂 Repeat ON':'🔂 Repeat OFF'); }
+function toggleLike(e) {
+  spawnFloat(e,'❤️');
+  const s=getState(); const liked=s.likedSongs||[];
+  const idx=liked.indexOf(s.curIdx);
+  if(idx>=0) liked.splice(idx,1); else liked.push(s.curIdx);
+  setState({likedSongs:liked});
+  const isLiked=liked.includes(s.curIdx);
+  document.getElementById('likeBtn').classList.toggle('liked',isLiked);
+  document.getElementById('likeBtn').textContent=isLiked?'❤️ Liked':'🤍 Like';
+  showToast(isLiked?'❤️ Added to liked!':'💔 Removed from liked');
+  checkBadges();
+}
+function tapArt(e) {
+  const s=getState(); setState({artTaps:(s.artTaps||0)+1});
+  spawnFloat(e,['✨','💖','🌸','⭐'][Math.floor(Math.random()*4)]);
+  addPoints(2);
+  document.getElementById('artCircle').style.transform='scale(.88)';
+  setTimeout(()=>document.getElementById('artCircle').style.transform='',200);
+  checkBadges();
+}
+
+loadUI();
+// Re-sync mini bar progress
+setInterval(()=>{ const p=document.getElementById('miniProg'); if(p) p.style.width=getState().progress+'%'; },1000);
+</script>
+</body>
+</html>

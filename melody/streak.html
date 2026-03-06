@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>📅 Streak — Melody</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+:root{--page-bg:linear-gradient(135deg,#d0f4e8 0%,#c9e8ff 50%,#e8d5ff 100%);}
+
+.streak-hero{padding:1.3rem 1.4rem;text-align:center;background:linear-gradient(120deg,rgba(107,207,181,.25),rgba(116,199,240,.2));border:1.5px solid rgba(107,207,181,.3);border-radius:22px;}
+.streak-num{font-family:'Baloo 2',cursive;font-size:4rem;font-weight:800;line-height:1;background:linear-gradient(135deg,var(--mint-d),var(--sky-d));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.streak-fire{font-size:2.5rem;animation:fireSpin 1.5s ease-in-out infinite alternate;}
+@keyframes fireSpin{from{transform:scale(1)rotate(-5deg);}to{transform:scale(1.15)rotate(5deg);}}
+.streak-label{font-family:'Baloo 2',cursive;font-size:.9rem;font-weight:700;color:var(--soft);margin-top:.2rem;}
+.streak-badge-row{display:flex;justify-content:center;gap:.6rem;margin-top:.8rem;flex-wrap:wrap;}
+.s-badge{font-size:.65rem;font-weight:800;padding:.28rem .8rem;border-radius:99px;border:1.5px solid var(--border);background:rgba(255,255,255,.6);}
+.s-badge.active{background:var(--mint);border-color:var(--mint-d);box-shadow:0 2px 8px rgba(107,207,181,.25);}
+
+/* Calendar heatmap */
+.cal-card{padding:1.2rem 1.3rem;display:flex;flex-direction:column;gap:.8rem;}
+.cal-header{display:flex;justify-content:space-between;align-items:center;}
+.cal-month{font-family:'Baloo 2',cursive;font-size:.95rem;font-weight:700;color:var(--ink);}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
+.cal-dow{font-size:.56rem;font-weight:800;color:var(--softer);text-align:center;text-transform:uppercase;letter-spacing:.05em;}
+.cal-day{aspect-ratio:1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;transition:transform .2s var(--bounce);}
+.cal-day:hover{transform:scale(1.15);}
+.cal-day.empty{background:transparent;}
+.cal-day.off{background:rgba(199,168,255,.12);color:var(--softer);}
+.cal-day.on{background:linear-gradient(135deg,var(--mint),var(--sky));color:var(--ink);box-shadow:0 2px 8px rgba(107,207,181,.3);}
+.cal-day.today{border:2px solid var(--mint-d);font-weight:800;}
+.cal-day.on.today{box-shadow:0 2px 8px rgba(107,207,181,.4),0 0 0 3px rgba(107,207,181,.2);}
+
+/* Goals */
+.goal-list{display:flex;flex-direction:column;gap:.55rem;}
+.goal-item{padding:.8rem 1rem;border-radius:16px;background:rgba(255,255,255,.5);border:1.5px solid var(--border);display:flex;align-items:center;gap:.9rem;}
+.goal-icon{font-size:1.4rem;flex-shrink:0;}
+.goal-info{flex:1;}
+.goal-name{font-size:.8rem;font-weight:800;color:var(--ink);}
+.goal-prog-wrap{height:6px;background:rgba(199,168,255,.2);border-radius:99px;margin-top:.35rem;overflow:hidden;}
+.goal-prog{height:100%;border-radius:99px;transition:width .8s var(--ease);}
+.goal-val{font-size:.65rem;font-weight:700;color:var(--soft);flex-shrink:0;text-align:right;line-height:1.3;}
+.goal-check{font-size:1.2rem;}
+
+/* Weekly recap */
+.recap-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
+.recap-day{display:flex;flex-direction:column;align-items:center;gap:3px;}
+.recap-bar-wrap{height:60px;display:flex;align-items:flex-end;}
+.recap-bar{width:100%;min-height:4px;border-radius:4px;background:linear-gradient(to top,var(--mint-d),var(--sky-d));transition:height .6s var(--ease);}
+.recap-lbl{font-size:.58rem;font-weight:800;color:var(--softer);text-transform:uppercase;}
+.recap-val{font-size:.58rem;font-weight:700;color:var(--soft);}
+</style>
+</head>
+<body>
+<div class="bg-wrap" style="--blob1:var(--mint);--blob2:var(--sky);--blob3:var(--lav)"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+<div class="page-shell">
+  <div class="ph">
+    <div class="ph-icon">📅</div>
+    <div><h1 style="--g1:var(--mint-d);--g2:var(--sky-d)">My Streak</h1><div class="sub">Keep the music going every day!</div></div>
+  </div>
+
+  <!-- Streak hero -->
+  <div class="streak-hero card">
+    <div style="display:flex;align-items:center;justify-content:center;gap:.8rem;">
+      <div class="streak-fire">🔥</div>
+      <div class="streak-num" id="streakNum">0</div>
+      <div class="streak-fire" style="animation-delay:.3s">🔥</div>
+    </div>
+    <div class="streak-label">Day Streak</div>
+    <div class="streak-badge-row" id="milestoneBadges"></div>
+  </div>
+
+  <!-- Calendar -->
+  <div class="card cal-card">
+    <div class="cal-header">
+      <div class="cal-month" id="calMonth"></div>
+      <span style="font-size:.65rem;color:var(--soft);font-weight:700">🟢 Active &nbsp; ⬜ Missed</span>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+  </div>
+
+  <!-- Weekly recap -->
+  <div class="card" style="padding:1.2rem 1.3rem;display:flex;flex-direction:column;gap:.8rem;">
+    <div style="font-family:'Baloo 2',cursive;font-size:.95rem;font-weight:700;color:var(--ink);">📊 This Week's Listening</div>
+    <div class="recap-grid" id="recapGrid"></div>
+  </div>
+
+  <!-- Goals -->
+  <div class="card" style="padding:1.2rem 1.3rem;display:flex;flex-direction:column;gap:.8rem;">
+    <div style="font-family:'Baloo 2',cursive;font-size:.95rem;font-weight:700;color:var(--ink);">🎯 Goals</div>
+    <div class="goal-list" id="goalList"></div>
+  </div>
+
+</div>
+<script src="shared.js"></script>
+<script>
+setupCursor();
+buildMiniBar('streak');
+checkDailyStreak();
+
+const s = initState();
+document.getElementById('streakNum').textContent = s.streakDays||0;
+
+// Milestone badges
+const milestones=[{d:1,l:'1 Day 🌱'},{d:3,l:'3 Days 🌸'},{d:7,l:'Week 🦋'},{d:14,l:'2 Weeks ⭐'},{d:30,l:'Month 💎'}];
+const mb=document.getElementById('milestoneBadges');
+milestones.forEach(m=>{
+  const el=document.createElement('span'); el.className='s-badge'+((s.streakDays||0)>=m.d?' active':'');
+  el.textContent=m.l; mb.appendChild(el);
+});
+
+// Calendar
+const now=new Date();
+const monthNames=['January','February','March','April','May','June','July','August','September','October','November','December'];
+document.getElementById('calMonth').textContent=monthNames[now.getMonth()]+' '+now.getFullYear();
+const firstDay=new Date(now.getFullYear(),now.getMonth(),1).getDay();
+const daysInMonth=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
+const grid=document.getElementById('calGrid');
+
+['Su','Mo','Tu','We','Th','Fr','Sa'].forEach(d=>{ const el=document.createElement('div'); el.className='cal-dow'; el.textContent=d; grid.appendChild(el); });
+
+// Build active days from streak history
+const activeDates=new Set((s.streakHistory||[]).map(h=>h.date));
+const todayStr=now.toDateString();
+
+for(let i=0;i<firstDay;i++){ const el=document.createElement('div'); el.className='cal-day empty'; grid.appendChild(el); }
+for(let d=1;d<=daysInMonth;d++){
+  const el=document.createElement('div');
+  const dateObj=new Date(now.getFullYear(),now.getMonth(),d);
+  const ds=dateObj.toDateString();
+  const isToday=ds===todayStr;
+  const isActive=activeDates.has(ds)||(isToday&&(s.streakDays||0)>0);
+  el.className='cal-day'+(isActive?' on':' off')+(isToday?' today':'');
+  el.textContent=d; grid.appendChild(el);
+}
+
+// Weekly recap (simulated listening minutes per day)
+const days=['Su','Mo','Tu','We','Th','Fr','Sa'];
+const recapGrid=document.getElementById('recapGrid');
+const todayDow=now.getDay();
+const baseMinutes=Math.max(0,Math.floor((s.minutesListened||0)/7));
+days.forEach((d,i)=>{
+  const isPast=i<=todayDow;
+  const mins=isPast?Math.max(2,baseMinutes+Math.floor(Math.sin(i*3.7)*8)):0;
+  const maxH=60, h=Math.min(maxH,Math.floor((mins/30)*maxH));
+  const el=document.createElement('div'); el.className='recap-day';
+  el.innerHTML=`<div class="recap-bar-wrap"><div class="recap-bar" style="height:${h}px"></div></div><div class="recap-lbl">${d}</div><div class="recap-val">${isPast?mins+'m':'—'}</div>`;
+  recapGrid.appendChild(el);
+});
+
+// Goals
+const pts=s.points||0, songs=s.songsPlayed||0, streak=s.streakDays||0, mins=Math.floor(s.minutesListened||0);
+const goals=[
+  {icon:'🎵',name:'Listen to 10 songs',cur:songs,max:10,color:'linear-gradient(90deg,var(--pink-d),var(--lav-d))'},
+  {icon:'✨',name:'Collect 100 vibes',cur:pts,max:100,color:'linear-gradient(90deg,var(--yellow-d),var(--peach))'},
+  {icon:'🔥',name:'3-day streak',cur:streak,max:3,color:'linear-gradient(90deg,var(--mint-d),var(--sky-d))'},
+  {icon:'⏱️',name:'Listen for 30 minutes',cur:mins,max:30,color:'linear-gradient(90deg,var(--lav-d),var(--pink-d))'},
+];
+const gl=document.getElementById('goalList');
+goals.forEach(g=>{
+  const done=g.cur>=g.max; const pct=Math.min(100,Math.floor((g.cur/g.max)*100));
+  const el=document.createElement('div'); el.className='goal-item';
+  el.innerHTML=`<div class="goal-icon">${g.icon}</div><div class="goal-info"><div class="goal-name">${g.name}</div><div class="goal-prog-wrap"><div class="goal-prog" style="width:${pct}%;background:${g.color}"></div></div></div><div class="goal-val">${done?'':''}${g.cur}/${g.max}<br><span style="font-size:.6rem;color:${done?'var(--mint-d)':'var(--softer)'}">${done?'✅ Done!':pct+'%'}</span></div>`;
+  gl.appendChild(el);
+});
+</script>
+</body>
+</html>

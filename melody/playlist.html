@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🎶 Playlist — Melody</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+:root{--page-bg:linear-gradient(135deg,#e8d5ff 0%,#c9e8ff 50%,#d0f4e8 100%);}
+.search-bar{display:flex;align-items:center;gap:.7rem;background:rgba(255,255,255,.65);border:1.5px solid var(--border);border-radius:99px;padding:.55rem 1.1rem;backdrop-filter:blur(12px);}
+.search-bar input{flex:1;border:none;background:none;font-family:'Nunito',sans-serif;font-size:.82rem;font-weight:700;color:var(--ink);outline:none;}
+.search-bar input::placeholder{color:var(--softer);}
+.genre-filters{display:flex;gap:.45rem;overflow-x:auto;scrollbar-width:none;padding-bottom:.2rem;}
+.genre-filters::-webkit-scrollbar{display:none;}
+.gf{font-size:.63rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;padding:.3rem .85rem;border-radius:99px;border:1.5px solid var(--border);background:rgba(255,255,255,.5);color:var(--soft);cursor:none;white-space:nowrap;transition:all .25s var(--bounce);}
+.gf:hover{transform:translateY(-2px);background:white;}
+.gf.active{background:var(--lav);color:var(--ink);border-color:var(--lav-d);transform:translateY(-2px);box-shadow:0 3px 10px rgba(167,139,250,.25);}
+
+.pl-list{display:flex;flex-direction:column;gap:.45rem;}
+.pl-item{display:flex;align-items:center;gap:.85rem;padding:.75rem 1rem;border-radius:18px;cursor:none;border:1.5px solid transparent;background:rgba(255,255,255,.5);transition:all .25s var(--bounce);position:relative;overflow:hidden;}
+.pl-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:0 4px 4px 0;background:linear-gradient(var(--pink-d),var(--lav-d));transform:scaleY(0);transition:transform .3s var(--bounce);}
+.pl-item:hover{background:rgba(255,255,255,.82);border-color:var(--border);transform:translateX(5px);}
+.pl-item:hover::before,.pl-item.active::before{transform:scaleY(1);}
+.pl-item.active{background:linear-gradient(90deg,rgba(255,179,198,.18),rgba(201,184,255,.12));border-color:var(--pink);}
+.pl-num{font-size:.7rem;font-weight:800;color:var(--softer);width:20px;text-align:center;flex-shrink:0;}
+.pl-item.active .pl-num{display:none;}
+.wv-d{display:none;gap:2px;align-items:flex-end;width:20px;flex-shrink:0;}
+.pl-item.active .wv-d{display:flex;}
+.wvv{width:3px;background:var(--pink-d);border-radius:3px;animation:wvvA .5s ease-in-out infinite alternate;}
+.wvv:nth-child(1){height:5px;} .wvv:nth-child(2){height:9px;animation-delay:.15s;} .wvv:nth-child(3){height:6px;animation-delay:.08s;}
+@keyframes wvvA{from{height:2px;}to{height:11px;}}
+.pl-emoji{font-size:1.3rem;flex-shrink:0;}
+.pl-info{flex:1;min-width:0;}
+.pl-name{font-size:.84rem;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pl-artist{font-size:.67rem;color:var(--soft);margin-top:.05rem;}
+.pl-item.active .pl-name{color:var(--pink-dd);}
+.pl-right{display:flex;flex-direction:column;align-items:flex-end;gap:.25rem;flex-shrink:0;}
+.pl-dur{font-size:.68rem;color:var(--soft);font-weight:700;}
+.pl-genre{font-size:.55rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:.17rem .55rem;border-radius:99px;background:var(--lav);color:var(--ink);}
+.pl-like{font-size:.85rem;cursor:none;background:none;border:none;transition:transform .2s var(--bounce);}
+.pl-like:hover{transform:scale(1.3);}
+.now-pip{position:absolute;top:8px;right:8px;font-size:.52rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:.15rem .48rem;border-radius:99px;background:var(--pink-d);color:white;animation:pip 2s ease-in-out infinite;}
+@keyframes pip{0%,100%{opacity:1;}50%{opacity:.3;}}
+.empty-msg{text-align:center;padding:2.5rem 1rem;color:var(--softer);font-size:.82rem;font-weight:700;}
+.count-bar{display:flex;justify-content:space-between;align-items:center;}
+.sort-sel{font-family:'Nunito',sans-serif;font-size:.68rem;font-weight:800;color:var(--soft);border:1.5px solid var(--border);background:rgba(255,255,255,.5);border-radius:99px;padding:.3rem .75rem;cursor:none;outline:none;backdrop-filter:blur(8px);}
+</style>
+</head>
+<body>
+<div class="bg-wrap"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+<div class="page-shell">
+  <div class="ph">
+    <div class="ph-icon">🎶</div>
+    <div><h1 style="--g1:var(--lav-d);--g2:var(--sky-d)">Playlist</h1><div class="sub" id="plSub">10 songs</div></div>
+  </div>
+
+  <div class="search-bar">
+    <span>🔍</span>
+    <input type="text" id="searchInput" placeholder="Search songs, artists, genres…" oninput="renderList()">
+    <span style="font-size:.9rem;cursor:none" onclick="document.getElementById('searchInput').value='';renderList()">✕</span>
+  </div>
+
+  <div class="genre-filters" id="genreFilters"></div>
+
+  <div class="count-bar">
+    <span style="font-size:.68rem;font-weight:700;color:var(--soft)" id="countTxt">10 songs</span>
+    <select class="sort-sel" id="sortSel" onchange="renderList()">
+      <option value="default">Original order</option>
+      <option value="az">A → Z</option>
+      <option value="dur">Shortest first</option>
+      <option value="genre">By genre</option>
+    </select>
+  </div>
+
+  <div class="pl-list" id="plList"></div>
+</div>
+<script src="shared.js"></script>
+<script>
+setupCursor();
+buildMiniBar('playlist');
+
+const genres = [...new Set(TRACKS.map(t=>t.genre))];
+let activeGenre = 'all';
+
+// Build genre filters
+const gf = document.getElementById('genreFilters');
+[{label:'All',val:'all'},...genres.map(g=>({label:g,val:g}))].forEach(({label,val})=>{
+  const btn=document.createElement('button');
+  btn.className='gf'+(val==='all'?' active':'');
+  btn.textContent=label;
+  btn.onclick=()=>{ activeGenre=val; document.querySelectorAll('.gf').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); renderList(); };
+  gf.appendChild(btn);
+});
+
+function renderList() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const sort = document.getElementById('sortSel').value;
+  const s = getState();
+  let list = TRACKS.map((t,i)=>({...t,i}));
+  if (activeGenre !== 'all') list = list.filter(t=>t.genre===activeGenre);
+  if (q) list = list.filter(t=>t.title.toLowerCase().includes(q)||t.artist.toLowerCase().includes(q)||t.genre.toLowerCase().includes(q));
+  if (sort==='az') list.sort((a,b)=>a.title.localeCompare(b.title));
+  else if (sort==='dur') list.sort((a,b)=>a.dur-b.dur);
+  else if (sort==='genre') list.sort((a,b)=>a.genre.localeCompare(b.genre));
+
+  const container = document.getElementById('plList');
+  container.innerHTML = '';
+  document.getElementById('plSub').textContent = list.length + ' song' + (list.length!==1?'s':'');
+  document.getElementById('countTxt').textContent = list.length + ' song' + (list.length!==1?'s':'');
+
+  if (!list.length) {
+    container.innerHTML = '<div class="empty-msg">🎵 No songs found. Try a different search!</div>';
+    return;
+  }
+  const liked = s.likedSongs||[];
+  list.forEach((t, rank) => {
+    const el = document.createElement('div');
+    el.className = 'pl-item' + (t.i===s.curIdx?' active':'');
+    const isLiked = liked.includes(t.i);
+    el.innerHTML = `
+      <div class="wv-d"><div class="wvv"></div><div class="wvv"></div><div class="wvv"></div></div>
+      <div class="pl-num">${rank+1}</div>
+      <div class="pl-emoji">${t.emoji}</div>
+      <div class="pl-info"><div class="pl-name">${t.title}</div><div class="pl-artist">${t.artist}</div></div>
+      <div class="pl-right">
+        <div class="pl-dur">${t.durStr}</div>
+        <div class="pl-genre">${t.genre}</div>
+      </div>
+      <button class="pl-like" onclick="toggleLike(event,${t.i})">${isLiked?'❤️':'🤍'}</button>
+      ${t.i===s.curIdx?'<div class="now-pip">NOW</div>':''}
+    `;
+    el.addEventListener('click', e => {
+      if(e.target.classList.contains('pl-like')) return;
+      setState({curIdx:t.i,progress:0});
+      // Navigate to player
+      window.location.href='player.html';
+    });
+    container.appendChild(el);
+  });
+}
+
+function toggleLike(e, idx) {
+  e.stopPropagation();
+  spawnFloat(e,'❤️');
+  const s=getState(); const liked=s.likedSongs||[];
+  const pos=liked.indexOf(idx);
+  if(pos>=0) liked.splice(pos,1); else liked.push(idx);
+  setState({likedSongs:liked});
+  showToast(liked.includes(idx)?'❤️ Liked!':'💔 Removed');
+  checkBadges(); renderList();
+}
+
+renderList();
+</script>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🎯 Quiz — Melody</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+:root{--page-bg:linear-gradient(135deg,#ffe0e8 0%,#fff0d0 50%,#e0f0ff 100%);}
+#quizSplash{display:flex;flex-direction:column;align-items:center;gap:1rem;padding:1rem 0;}
+.quiz-art{width:140px;height:140px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--yellow));display:flex;align-items:center;justify-content:center;font-size:4.5rem;box-shadow:0 10px 36px rgba(255,133,161,.3),0 0 0 8px rgba(255,255,255,.5);animation:quizBob 3s ease-in-out infinite;}
+@keyframes quizBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+.quiz-title{font-family:'Baloo 2',cursive;font-size:1.8rem;font-weight:800;text-align:center;background:linear-gradient(120deg,var(--pink-dd),var(--yellow-d));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.quiz-desc{font-size:.8rem;color:var(--soft);font-weight:700;text-align:center;line-height:1.7;max-width:280px;}
+.start-btn{background:linear-gradient(135deg,var(--pink-d),var(--lav-d));color:white;border:none;border-radius:99px;padding:.8rem 2.5rem;font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:700;cursor:none;box-shadow:0 6px 20px rgba(167,139,250,.4);transition:transform .3s var(--bounce),box-shadow .3s;}
+.start-btn:hover{transform:scale(1.08)translateY(-2px);box-shadow:0 10px 28px rgba(167,139,250,.5);}
+.score-preview{display:flex;gap:1.5rem;padding:.9rem 1.5rem;background:rgba(255,255,255,.55);border-radius:18px;border:1.5px solid var(--border);}
+.sp-item{text-align:center;}
+.sp-num{font-family:'Baloo 2',cursive;font-size:1.4rem;font-weight:800;color:var(--ink);}
+.sp-lbl{font-size:.6rem;color:var(--soft);font-weight:700;text-transform:uppercase;letter-spacing:.06em;}
+#quizActive{display:none;flex-direction:column;gap:1rem;}
+.q-progress{display:flex;align-items:center;gap:.8rem;}
+.q-prog-bar{flex:1;height:7px;background:rgba(199,168,255,.22);border-radius:99px;overflow:hidden;}
+.q-prog-fill{height:100%;background:linear-gradient(90deg,var(--pink-d),var(--lav-d));border-radius:99px;transition:width .5s var(--ease);}
+.q-num{font-size:.68rem;font-weight:800;color:var(--soft);}
+.q-timer{font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:var(--pink-dd);min-width:30px;text-align:center;}
+.q-card{padding:1.4rem;display:flex;flex-direction:column;gap:.9rem;}
+.q-hint{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--soft);}
+.q-emoji{font-size:3rem;text-align:center;animation:qEmoji 2s ease-in-out infinite;}
+@keyframes qEmoji{0%,100%{transform:scale(1)rotate(-5deg);}50%{transform:scale(1.1)rotate(5deg);}}
+.q-text{font-family:'Baloo 2',cursive;font-size:1.15rem;font-weight:700;color:var(--ink);line-height:1.35;text-align:center;}
+.opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;}
+.opt-btn{padding:.8rem .9rem;border-radius:16px;border:2px solid var(--border);background:rgba(255,255,255,.55);color:var(--ink);font-family:'Nunito',sans-serif;font-size:.8rem;font-weight:800;cursor:none;text-align:left;transition:all .25s var(--bounce);position:relative;overflow:hidden;}
+.opt-btn:hover:not(:disabled){transform:translateY(-3px);background:rgba(255,255,255,.85);border-color:var(--lav-d);box-shadow:0 6px 16px var(--shadow);}
+.opt-btn.correct{background:linear-gradient(120deg,rgba(107,207,181,.3),rgba(181,234,215,.4))!important;border-color:var(--mint-d)!important;}
+.opt-btn.wrong{background:linear-gradient(120deg,rgba(255,133,161,.25),rgba(255,179,198,.2))!important;border-color:var(--pink-d)!important;opacity:.8;}
+.opt-btn.correct::after{content:'✅';position:absolute;right:.7rem;top:50%;transform:translateY(-50%);}
+.opt-btn.wrong::after{content:'❌';position:absolute;right:.7rem;top:50%;transform:translateY(-50%);}
+.opt-label{display:flex;align-items:center;gap:.5rem;}
+.opt-letter{width:22px;height:22px;border-radius:50%;background:rgba(199,168,255,.3);display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:800;flex-shrink:0;}
+.q-feedback{text-align:center;font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;padding:.8rem;border-radius:14px;opacity:0;transition:opacity .3s;}
+.q-feedback.show{opacity:1;}
+.q-feedback.ok{background:rgba(107,207,181,.2);color:var(--mint-d);}
+.q-feedback.bad{background:rgba(255,133,161,.2);color:var(--pink-dd);}
+#quizResults{display:none;flex-direction:column;align-items:center;gap:1rem;padding:1rem 0;}
+.result-art{font-size:5rem;animation:resultBounce 1s var(--bounce) both;}
+@keyframes resultBounce{from{transform:scale(0)rotate(-20deg);}to{transform:scale(1)rotate(0);}}
+.result-score{font-family:'Baloo 2',cursive;font-size:3rem;font-weight:800;background:linear-gradient(135deg,var(--pink-d),var(--lav-d));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;}
+.result-label{font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:700;color:var(--ink);}
+.result-msg{font-size:.8rem;color:var(--soft);font-weight:700;text-align:center;max-width:260px;line-height:1.6;}
+.result-pts{font-size:.78rem;font-weight:800;padding:.4rem 1.1rem;border-radius:99px;background:var(--yellow);color:var(--ink);border:1px solid rgba(200,160,0,.2);}
+.review-list{width:100%;display:flex;flex-direction:column;gap:.4rem;}
+.rev-item{display:flex;align-items:center;gap:.7rem;padding:.6rem .9rem;border-radius:12px;font-size:.76rem;font-weight:700;}
+.rev-item.ok{background:rgba(107,207,181,.15);}
+.rev-item.bad{background:rgba(255,133,161,.12);}
+.play-again{background:linear-gradient(135deg,var(--pink-d),var(--lav-d));color:white;border:none;border-radius:99px;padding:.72rem 2rem;font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;cursor:none;box-shadow:0 5px 18px rgba(167,139,250,.4);transition:transform .3s var(--bounce);}
+.play-again:hover{transform:scale(1.08);}
+</style>
+</head>
+<body>
+<div class="bg-wrap" style="--blob1:var(--pink);--blob2:var(--yellow);--blob3:var(--sky)"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+<div class="page-shell">
+  <div class="ph"><div class="ph-icon">🎯</div><div><h1 style="--g1:var(--pink-dd);--g2:var(--yellow-d)">Music Quiz</h1><div class="sub">Test your knowledge!</div></div></div>
+
+  <div id="quizSplash">
+    <div class="quiz-art">🎯</div>
+    <div class="quiz-title">How well do you<br>know your music?</div>
+    <div class="quiz-desc">Answer 8 questions about songs, artists and genres. Earn 10 vibes per correct answer! 🌸</div>
+    <div class="score-preview">
+      <div class="sp-item"><div class="sp-num" id="splashTotal">0</div><div class="sp-lbl">Correct</div></div>
+      <div class="sp-item"><div class="sp-num" id="splashBest">0%</div><div class="sp-lbl">Best Rate</div></div>
+      <div class="sp-item"><div class="sp-num" id="splashPts">0</div><div class="sp-lbl">Vibes</div></div>
+    </div>
+    <button class="start-btn" onclick="startQuiz()">Start Quiz 🎵</button>
+  </div>
+
+  <div id="quizActive">
+    <div class="q-progress">
+      <div class="q-num" id="qNum">1 / 8</div>
+      <div class="q-prog-bar"><div class="q-prog-fill" id="qProg"></div></div>
+      <div class="q-timer" id="qTimer">⏱ 15</div>
+    </div>
+    <div class="card q-card">
+      <div class="q-hint">Question</div>
+      <div class="q-emoji" id="qEmoji">🎵</div>
+      <div class="q-text" id="qText"></div>
+      <div class="opts-grid" id="optsGrid"></div>
+      <div class="q-feedback" id="qFeedback"></div>
+    </div>
+  </div>
+
+  <div id="quizResults">
+    <div class="result-art" id="resultArt">🎉</div>
+    <div class="result-score" id="resultScore">8/8</div>
+    <div class="result-label" id="resultLabel">Perfect!</div>
+    <div class="result-msg" id="resultMsg"></div>
+    <div class="result-pts" id="resultPts"></div>
+    <div style="width:100%">
+      <div style="font-size:.7rem;font-weight:800;color:var(--soft);margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.08em">📋 Review</div>
+      <div class="review-list" id="reviewList"></div>
+    </div>
+    <button class="play-again" onclick="resetQuiz()">Play Again 🎯</button>
+  </div>
+</div>
+<script src="shared.js"></script>
+<script>
+setupCursor();
+buildMiniBar('quiz');
+
+const QUIZ_COUNT=8;
+let questions=[],curQ=0,answers=[],timerVal=15,timerInt=null;
+
+function shuffleArr(arr){return [...arr].sort(()=>Math.random()-.5);}
+
+function startQuiz(){
+  questions=shuffleArr(QUIZ_QUESTIONS).slice(0,QUIZ_COUNT);
+  curQ=0;answers=[];
+  document.getElementById('quizSplash').style.display='none';
+  document.getElementById('quizResults').style.display='none';
+  document.getElementById('quizActive').style.display='flex';
+  showQuestion();
+}
+
+function showQuestion(){
+  const q=questions[curQ];
+  const t=TRACKS[q.song];
+  document.getElementById('qNum').textContent=(curQ+1)+' / '+QUIZ_COUNT;
+  document.getElementById('qProg').style.width=(((curQ+1)/QUIZ_COUNT)*100)+'%';
+  document.getElementById('qEmoji').textContent=t.emoji;
+  document.getElementById('qText').textContent=q.q;
+  document.getElementById('qFeedback').className='q-feedback';
+  document.getElementById('qFeedback').textContent='';
+  const grid=document.getElementById('optsGrid');grid.innerHTML='';
+  ['A','B','C','D'].forEach((letter,i)=>{
+    const btn=document.createElement('button');btn.className='opt-btn';
+    btn.innerHTML=`<div class="opt-label"><div class="opt-letter">${letter}</div>${q.opts[i]}</div>`;
+    btn.onclick=()=>selectAnswer(i,btn);
+    grid.appendChild(btn);
+  });
+  startTimer();
+}
+
+function startTimer(){
+  clearInterval(timerInt);timerVal=15;
+  document.getElementById('qTimer').textContent='⏱ '+timerVal;
+  timerInt=setInterval(()=>{
+    timerVal--;
+    document.getElementById('qTimer').textContent='⏱ '+timerVal;
+    const pct=timerVal/15;
+    document.getElementById('qTimer').style.color=pct>.5?'var(--pink-dd)':'#e05050';
+    if(timerVal<=0){clearInterval(timerInt);autoFail();}
+  },1000);
+}
+
+function autoFail(){
+  answers.push({correct:false,ans:-1,q:questions[curQ]});
+  showFeedback(false,'⏰ Time\'s up! Answer: '+questions[curQ].opts[questions[curQ].ans]);
+  disableOpts();
+  document.querySelectorAll('.opt-btn')[questions[curQ].ans].classList.add('correct');
+  setTimeout(nextQ,2000);
+}
+
+function selectAnswer(i,btn){
+  clearInterval(timerInt);
+  const q=questions[curQ];
+  const correct=i===q.ans;
+  answers.push({correct,ans:i,q});
+  disableOpts();
+  btn.classList.add(correct?'correct':'wrong');
+  if(!correct) document.querySelectorAll('.opt-btn')[q.ans].classList.add('correct');
+  if(correct){spawnFloat(null,'⭐');addPoints(10,'✅ Correct! +10 vibes');}
+  showFeedback(correct,correct?['🎉 Correct!','✨ Nailed it!','🌟 Brilliant!','💖 Yes!'][Math.floor(Math.random()*4)]:'❌ Wrong! Answer: '+q.opts[q.ans]);
+  setTimeout(nextQ,1800);
+}
+
+function disableOpts(){document.querySelectorAll('.opt-btn').forEach(b=>b.disabled=true);}
+function showFeedback(ok,msg){const el=document.getElementById('qFeedback');el.textContent=msg;el.className='q-feedback show '+(ok?'ok':'bad');}
+
+function nextQ(){curQ++;if(curQ>=QUIZ_COUNT){showResults();return;}showQuestion();}
+
+function showResults(){
+  clearInterval(timerInt);
+  document.getElementById('quizActive').style.display='none';
+  document.getElementById('quizResults').style.display='flex';
+  const correct=answers.filter(a=>a.correct).length;
+  const pct=Math.floor((correct/QUIZ_COUNT)*100);
+  const earned=correct*10;
+  document.getElementById('resultScore').textContent=correct+'/'+QUIZ_COUNT;
+  const m=pct>=90?['🏆','Perfect Score!','You\'re a music genius! 🌟']:pct>=70?['🌟','Great Job!','You really know your tunes! 🎵']:pct>=50?['🎵','Not Bad!','Keep listening & try again! 🌸']:['🌱','Keep Growing!','Listen more & quiz again! 💪'];
+  document.getElementById('resultArt').textContent=m[0];
+  document.getElementById('resultLabel').textContent=m[1];
+  document.getElementById('resultMsg').textContent=m[2];
+  document.getElementById('resultPts').textContent='+'+earned+' vibes earned!';
+  const s=getState();
+  setState({quizScore:(s.quizScore||0)+correct,quizTotal:(s.quizTotal||0)+QUIZ_COUNT});
+  addPoints(earned);checkBadges();
+  const rl=document.getElementById('reviewList');rl.innerHTML='';
+  answers.forEach(a=>{
+    const el=document.createElement('div');el.className='rev-item '+(a.correct?'ok':'bad');
+    el.innerHTML=`<div style="font-size:1rem">${a.correct?'✅':'❌'}</div><div style="flex:1;font-size:.72rem">${a.q.q}</div>`;
+    rl.appendChild(el);
+  });
+  refreshSplash();
+}
+
+function resetQuiz(){
+  document.getElementById('quizResults').style.display='none';
+  document.getElementById('quizSplash').style.display='flex';
+  refreshSplash();
+}
+
+function refreshSplash(){
+  const s=getState();
+  document.getElementById('splashTotal').textContent=s.quizScore||0;
+  const tot=s.quizTotal||1;
+  document.getElementById('splashBest').textContent=Math.floor(((s.quizScore||0)/tot)*100)+'%';
+  document.getElementById('splashPts').textContent=s.points||0;
+}
+refreshSplash();
+</script>
+</body>
+</html>
