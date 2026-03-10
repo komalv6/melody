@@ -100,6 +100,5 @@ GitHub:
 https://github.com/komalv6
 
 📄 License
-MIT — free to use, remix, and share. A credit back is always appreciated! 🌸
-
-⭐ If you like this project, consider giving it a star on GitHub!
+MIT — free to use, remix, and share. A credit back is always appreciated! 
+If you like this project, consider giving it a star on GitHub!
