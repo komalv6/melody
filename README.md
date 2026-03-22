@@ -51,6 +51,7 @@ Monthly calendar heatmap showing active listening days, current streak counter w
 Avatar picker (12 options), XP progress bar, 6 stat boxes (Songs Played, Day Streak, Minutes Listened, Quiz Correct, Art Taps, Badges), full badge showcase (12 badges), liked songs list, recently played list, and a data reset option.
 
 🎮 Features
+
 🎵 Music Playback
 
 10 demo tracks (via SoundHelix MP3s) with graceful simulated-playback fallback if audio is blocked
